@@ -21,6 +21,6 @@ async def on_ready():
 async def hello(ctx):
     await ctx.send('Hello!')
 
-
-client.run('NzY2NTIyMDAyNDMyNTg5ODU1.X4klPg.HDQwrA4MqNoei6pMnHsShm3dO7w')
+with open('token.txt') as token:
+    client.run(token)
 
