@@ -22,6 +22,6 @@ async def on_ready():
 async def hello(ctx):
     await ctx.send('Hello!')
 
-with open('token.txt') as token:
+with open('token.txt') as tokenfile:
+    token = tokenfile.readline()
     client.run(token)
-
