@@ -1,1 +1,1 @@
-web: python pleasehelp.py
+worker: python pleasehelp.py
