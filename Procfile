@@ -1,1 +1,1 @@
-worker: python pleasehelp.py
+worker: python ./app/main.py

@@ -20,12 +20,19 @@ session = aiohttp.ClientSession()
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
 
-memberList = []
+trackerList = []
 
 @client.command()
-async def track(ctx, member: discord.Member):
+async def track(ctx, member: discord.Member, mention_author=False):
+    tracker = {
+                "tracked": member,
+                "author": ctx.author,
+                "channel" : ctx.channel,
+                "mention_author" : True if mention_author else mention_author,
+                "guild" : ctx.guild,
+                }
     await ctx.send("Tracking!")
-    memberList.append(member)
+    trackerList.append(tracker)
 
 @client.event
 async def on_member_update(before, after):
@@ -58,8 +65,9 @@ async def on_member_update(before, after):
         ]
     }
 
-    for index, member in enumerate(memberList):
-        if member == after:
+    for index, tracker in enumerate(trackerList):
+        member = tracker['tracked']
+        if member == after and after.guild == tracker['guild']:
             if before.status != after.status or before.mobile_status != after.mobile_status:
                 if before.status != after.status:
                     platform = 'Desktop'
@@ -68,10 +76,10 @@ async def on_member_update(before, after):
                     platform = 'Mobile'
                     opposite = 'Desktop'
 
-                if after.nick is not None: nickname = after.name
+                if after.nick is not None: nickname = after.nick
                 else: nickname = after.name
 
-                embed['title'] = f"`{nickname}`'s status (`{after.name}`#`{after.discriminator}` | {platform})"
+                embed['title'] = f"`{nickname}`'s status \n (`{after.name}`#`{after.discriminator}` | {platform})"
                 embed['color'] = int(str(after.color)[1:], 16)
                 embed['timestamp'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
@@ -79,8 +87,8 @@ async def on_member_update(before, after):
 
                 embed['thumbnail']['url'] = str(after.avatar_url)
 
-                embed['author']['name'] = memberList[index].name + '#' + memberList[index].discriminator
-                embed['author']['icon_url'] = str(memberList[index].avatar_url)
+                embed['author']['name'] = trackerList[index]['author'].name + '#' + trackerList[index]['author'].discriminator
+                embed['author']['icon_url'] = str(trackerList[index]['author'].avatar_url)
 
                 embed['fields'][0]['value'] = str(before.status).upper()
                 embed['fields'][1]['value'] = str(after.status).upper()
@@ -90,5 +98,4 @@ async def on_member_update(before, after):
                 response = await session.post(url=os.environ['webhook_url'], json={'embeds':[embed]})
                 async with response as resp:
                     print(await resp.text())
-
 client.run(token)
