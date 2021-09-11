@@ -1,6 +1,8 @@
+import os
 import discord
 from discord.ext import commands
 
+token = os.environ['DISCORD_PRIVATE_KEY']
 intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
@@ -26,6 +28,4 @@ async def on_member_update(before, after):
             print(before.status, after.status)
 
 
-with open('token.txt') as tokenFile:
-    token = tokenFile.readline()
-    client.run(token)
+client.run(token)

@@ -126,7 +126,9 @@ dmypy.json
 # pycharm stuff
 .idea/
 
-# bot things
-token.txt
-
+# repl.it stuff
+.breakpoints
+.replit
+poetry.lock
+pyproject.toml
 
