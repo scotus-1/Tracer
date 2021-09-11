@@ -1,5 +1,6 @@
 import os
 import discord
+import requests
 from discord.ext import commands
 
 token = os.environ['DISCORD_PRIVATE_KEY']
